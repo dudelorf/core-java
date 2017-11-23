@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -13,6 +15,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -150,6 +153,129 @@ public class ch7 {
             System.out.println(pairs);
         }catch(IOException exc){
             System.out.println(exc.getMessage());
+        }
+    }
+    
+    public void ex7a(){
+        try{
+            Map<String, Integer> wordMap = new TreeMap<>();
+            
+            List<String> lines = Files.readAllLines(Paths.get("src/resources/words.txt"));
+            
+            lines = lines.stream()
+            .map(line -> line.replaceAll("[^\\p{IsAlphabetic} ]", "").toLowerCase())
+            .flatMap(line -> Arrays.stream(line.split("\\s")))
+            .filter(word -> !word.equals(""))
+            .collect(Collectors.toList());
+            
+            for(String word : lines){
+                wordMap.put(word, wordMap.getOrDefault(word, 0) + 1);
+            }
+            
+            System.out.println(wordMap);
+            
+        }catch(IOException exc){
+            System.out.println(exc.getMessage());
+        }
+    }
+    
+    public void ex8(){
+        try{
+            Map<String, Set<Integer>> wordMap = new TreeMap<>();
+            
+            List<String> lines = Files.readAllLines(Paths.get("src/resources/words.txt"));
+            int lineNum = 1;
+            for(String line : lines){
+                List<String> words = Arrays.stream(line.split("\\s"))
+                .map(word -> word.replaceAll("[^\\p{IsAlphabetic} ]", ""))
+                .map(String::toLowerCase)
+                .filter(word -> !word.equals(""))
+                .collect(Collectors.toList());
+                
+                for(String word: words){
+                    Set<Integer> linesInFile = wordMap.get(word);
+                    if(linesInFile == null){
+                        linesInFile = new HashSet<>();
+                    }
+                    linesInFile.add(lineNum);
+                    wordMap.put(word, linesInFile);
+                }
+                lineNum++;
+            }
+            
+            System.out.println(wordMap);
+            
+        }catch(IOException exc){
+            System.out.println(exc.getMessage());
+        }
+    }
+    
+    public void ex9(){
+        Map<String, Integer> map = new HashMap<>();
+        
+        for (int i = 0; i < 10; i++) {
+            map.merge("merge", 1, Integer::sum);
+            
+            if(map.containsKey("contains")){
+                map.put("contains", map.get("contains") + 1);
+            }else{
+                map.put("contains", 1);
+            }
+            
+            if(map.get("null") == null){
+                map.put("null", 1);
+            }else{
+                map.put("null", map.get("null") + 1);
+            }
+            
+            map.put("default", map.getOrDefault("default", 0) + 1);
+            
+            map.putIfAbsent("absent", 0);
+            map.put("absent", map.get("absent") + 1);
+        }
+        
+        System.out.println(map);
+    }
+    
+    public void ex11(){
+        try{
+            String line = Files.newBufferedReader(Paths.get("src/resources/words.txt")).readLine();
+            List<String> words = Arrays.stream(line.split("\\s"))
+                                 .map(word -> word.replaceAll("[^\\p{IsAlphabetic} ]", ""))
+                                 .filter(s -> s.length() > 0)
+                                 .collect(Collectors.toList());
+            
+            System.out.println("before");
+            System.out.println(words);
+            
+            List<String> sub = words.subList(1, words.size() - 2);
+            Collections.shuffle(sub);
+            
+            System.out.println("after");
+            System.out.println(words);
+        }catch(IOException exc){
+            exc.printStackTrace();
+        }
+    }
+    
+    public void ex12(){
+        try{
+            String line = Files.newBufferedReader(Paths.get("src/resources/words.txt")).readLine();
+            List<String> words = Arrays.stream(line.split("\\s"))
+                                 .map(word -> word.replaceAll("[^\\p{IsAlphabetic} ]", ""))
+                                 .map(String::toLowerCase)
+                                 .filter(s -> s.length() > 0)
+                                 .collect(Collectors.toList());
+            
+            Collections.shuffle(words);
+            
+            String first = words.get(0);
+            words.set(0, first.substring(0,1).toUpperCase() + first.substring(1));
+            words.set(words.size() - 1, words.get(words.size() -1) + ".");
+            
+            System.out.println(words);
+        }catch(IOException exc){
+            exc.printStackTrace();
         }
     }
 }
