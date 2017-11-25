@@ -278,4 +278,20 @@ public class ch7 {
             exc.printStackTrace();
         }
     }
+    
+    public void ex13(){
+        Cache<String, Integer> c = new Cache<>(2);
+        
+        c.put("one", 1);
+        c.put("two", 2);
+        c.put("three", 3);
+        c.put("one", 123);
+        
+        System.out.println(c);
+    }
+    
+    public void ex14(){
+        int n = 30;
+        Collections.unmodifiableList(IntStream.rangeClosed(0, n).boxed().collect(Collectors.toList()));
+    }
 }

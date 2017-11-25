@@ -13,8 +13,8 @@ public class CoreJava {
      */
     public static void main(String[] args){
         
-        ch7 ch = new ch7();
-        ch.ex12();
+        ch8 ch = new ch8();
+        ch.ex2();
     }
     
 }
